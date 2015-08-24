@@ -5,14 +5,19 @@ def dfs(r, c, pacman_r, pacman_c, food_r, food_c, grid):
 
     visited, stack = [], [(pacman_r, pacman_c)]
     moves = []
-    vertex = (pacman_r, pacman_c)
-    while len(stack) > 0 and vertex != (food_r, food_c):
+    food = False
+    while len(stack) > 0 and not food:
         vertex = stack.pop()
+        moves.append(vertex)
+
         if vertex in visited:
             continue
 
         visited.append(vertex)
-        moves.append(vertex)
+
+        if vertex == (food_r, food_c):
+            food = True
+            continue
 
         row, col = vertex
         up_c = (row-1, col)
@@ -21,41 +26,52 @@ def dfs(r, c, pacman_r, pacman_c, food_r, food_c, grid):
         down_c = (row+1, col)
 
         for each in [up_c, left_c, right_c, down_c]:
-            xx, yy = each
+            rr, cc = each
             try:
                 box = grid.item(each)
-                if 0 <= xx <= r-1 and 0 <= yy <= c-1 and box != '%':
-                    stack.append(each)
             except:
-                continue
-                
-    return moves
+                box = None
+            if box and box != '%' and each not in visited and each not in stack:
+                stack.append(each)
+    return visited
 
 
 def main():
 
     grid = [
-            '%%%%%%%%%%%%%%%%%%%%',
-            '%--------------%---%',
-            '%-%%-%%-%%-%%-%%-%-%',
-            '%--------P-------%-%',
-            '%%%%%%%%%%%%%%%%%%-%',
-            '%.-----------------%',
-            '%%%%%%%%%%%%%%%%%%%%'
+            '%%%%%%%%%%%%%%%%%%%%%%%%%%%%',
+            '%------------%%------------%',
+            '%-%%%%-%%%%%-%%-%%%%%-%%%%-%',
+            '%.%%%%-%%%%%-%%-%%%%%-%%%%-%',
+            '%-%%%%-%%%%%-%%-%%%%%-%%%%-%',
+            '%--------------------------%',
+            '%-%%%%-%%-%%%%%%%%-%%-%%%%-%',
+            '%-%%%%-%%-%%%%%%%%-%%-%%%%-%',
+            '%------%%----%%----%%------%',
+            '%%%%%%-%%%%%-%%-%%%%%-%%%%%%',
+            '%%%%%%-%%%%%-%%-%%%%%-%%%%%%',
+            '%%%%%%-%------------%-%%%%%%',
+            '%%%%%%-%-%%%%--%%%%-%-%%%%%%',
+            '%--------%--------%--------%',
+            '%%%%%%-%-%%%%%%%%%%-%-%%%%%%',
+            '%%%%%%-%------------%-%%%%%%',
+            '%%%%%%-%-%%%%%%%%%%-%-%%%%%%',
+            '%------------%%------------%',
+            '%-%%%%-%%%%%-%%-%%%%%-%%%%-%',
+            '%-%%%%-%%%%%-%%-%%%%%-%%%%-%',
+            '%---%%----------------%%---%',
+            '%%%-%%-%%-%%%%%%%%-%%-%%-%%%',
+            '%%%-%%-%%-%%%%%%%%-%%-%%-%%%',
+            '%------%%----%%----%%------%',
+            '%-%%%%%%%%%%-%%-%%%%%%%%%%-%',
+            '%------------P-------------%',
+            '%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
             ]
-    pacman_r, pacman_c = 3,9
-    food_r, food_c = 5, 1
-    r, c = 7, 20
-    moves = dfs(r, c, pacman_r, pacman_c, food_r, food_c, grid)
+    pacman_r, pacman_c = 25, 13
+    food_r, food_c = 3, 1
+    r, c = 27, 28
+    visited = dfs(r, c, pacman_r, pacman_c, food_r, food_c, grid)
 
-    print len(moves)
-    for each in moves:
-        rr, cc = each
-        print rr, cc
-
-    print len(moves)-1
-    for each in moves:
-        rr, cc = each
-        print rr, cc
+    print len(visited)
 if __name__ == "__main__":
     main()
